@@ -1266,3 +1266,18 @@ type SECURITY_ATTRIBUTES struct {
 	SecurityDescriptor uintptr
 	InheritHandle      BOOL
 }
+
+// typedef struct tagDRAWTEXTPARAMS {
+//   UINT cbSize;
+//   int  iTabLength;
+//   int  iLeftMargin;
+//   int  iRightMargin;
+//   UINT uiLengthDrawn;
+// } DRAWTEXTPARAMS, *LPDRAWTEXTPARAMS;
+type DRAWTEXTPARAMS struct {
+	cbSize        uint
+	iTabLength    int
+	iLeftMargin   int
+	iRightMargin  int
+	uiLengthDrawn uint
+}

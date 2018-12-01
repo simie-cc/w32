@@ -11,6 +11,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+
 	//"regexp"
 	"syscall"
 	"unicode/utf8"
@@ -134,6 +135,7 @@ var (
 	procUnregisterHotKey              = moduser32.NewProc("UnregisterHotKey")
 	procUpdateWindow                  = moduser32.NewProc("UpdateWindow")
 	procWaitMessage                   = moduser32.NewProc("WaitMessage")
+	procSetLayeredWindowAttributes    = moduser32.NewProc("SetLayeredWindowAttributes")
 )
 
 func SendMessageTimeout(hwnd HWND, msg uint32, wParam, lParam uintptr, fuFlags, uTimeout uint32) uintptr {
@@ -1173,6 +1175,22 @@ func UnregisterHotKey(hwnd HWND, id int) (err error) {
 	_, _, err = procUnregisterHotKey.Call(
 		uintptr(hwnd),
 		uintptr(id),
+	)
+	if err.Error() != ErrSuccess {
+		return
+	}
+	err = nil
+	return
+}
+
+// Sets the opacity and transparency color key of a layered window.
+//https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-setlayeredwindowattributes
+func SetLayeredWindowAttributes(hwnd HWND, crKey COLORREF, bAlpha byte, dwFlags DWORD) (err error) {
+	_, _, err = procSetLayeredWindowAttributes.Call(
+		uintptr(hwnd),
+		uintptr(crKey),
+		uintptr(bAlpha),
+		uintptr(dwFlags),
 	)
 	if err.Error() != ErrSuccess {
 		return

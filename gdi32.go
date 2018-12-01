@@ -25,6 +25,7 @@ var (
 	procCreateEnhMetaFile         = modgdi32.NewProc("CreateEnhMetaFileW")
 	procCreateFontIndirect        = modgdi32.NewProc("CreateFontIndirectW")
 	procCreateIC                  = modgdi32.NewProc("CreateICW")
+	procCreateSolidBrush          = modgdi32.NewProc("CreateSolidBrush")
 	procDeleteDC                  = modgdi32.NewProc("DeleteDC")
 	procDeleteEnhMetaFile         = modgdi32.NewProc("DeleteEnhMetaFile")
 	procDeleteObject              = modgdi32.NewProc("DeleteObject")
@@ -101,6 +102,13 @@ func CreateFontIndirect(logFont *LOGFONT) HFONT {
 		uintptr(unsafe.Pointer(logFont)))
 
 	return HFONT(ret)
+}
+
+func CreateSolidBrush(color COLORREF) HBRUSH {
+	ret, _, _ := procCreateSolidBrush.Call(
+		uintptr(color))
+
+	return HBRUSH(ret)
 }
 
 func AbortDoc(hdc HDC) int {
@@ -540,4 +548,8 @@ func SetPixelFormat(hdc HDC, iPixelFormat int, pfd *PIXELFORMATDESCRIPTOR) bool 
 func SwapBuffers(hdc HDC) bool {
 	ret, _, _ := procSwapBuffers.Call(uintptr(hdc))
 	return ret == TRUE
+}
+
+func RGB(r, g, b byte) COLORREF {
+	return COLORREF(uint32(r)<<16 | uint32(g)<<8 | uint32(b))
 }
