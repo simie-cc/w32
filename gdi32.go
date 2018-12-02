@@ -49,6 +49,7 @@ var (
 	procMoveToEx                  = modgdi32.NewProc("MoveToEx")
 	procPatBlt                    = modgdi32.NewProc("PatBlt")
 	procPlayEnhMetaFile           = modgdi32.NewProc("PlayEnhMetaFile")
+	procPolygon                   = modgdi32.NewProc("Polygon")
 	procRectangle                 = modgdi32.NewProc("Rectangle")
 	procResetDC                   = modgdi32.NewProc("ResetDCW")
 	procSelectObject              = modgdi32.NewProc("SelectObject")
@@ -365,6 +366,14 @@ func PlayEnhMetaFile(hdc HDC, hemf HENHMETAFILE, lpRect *RECT) bool {
 	return ret != 0
 }
 
+func Polygon(hdc HDC, apt []POINT, cpt int) bool {
+	ret, _, _ := procPolygon.Call(
+		uintptr(hdc),
+		uintptr(unsafe.Pointer(&apt[0])),
+		uintptr(cpt))
+	return ret != 0
+}
+
 func Rectangle(hdc HDC, nLeftRect, nTopRect, nRightRect, nBottomRect int) bool {
 	ret, _, _ := procRectangle.Call(
 		uintptr(hdc),
@@ -551,5 +560,5 @@ func SwapBuffers(hdc HDC) bool {
 }
 
 func RGB(r, g, b byte) COLORREF {
-	return COLORREF(uint32(r)<<16 | uint32(g)<<8 | uint32(b))
+	return COLORREF(uint32(b)<<16 | uint32(g)<<8 | uint32(r))
 }
