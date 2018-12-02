@@ -1281,3 +1281,27 @@ type DRAWTEXTPARAMS struct {
 	iRightMargin  int
 	uiLengthDrawn uint
 }
+
+// https://docs.microsoft.com/zh-tw/windows/desktop/api/sysinfoapi/ns-sysinfoapi-_memorystatusex
+//	typedef struct _MEMORYSTATUSEX {
+//	  DWORD     dwLength;
+//	  DWORD     dwMemoryLoad;
+//	  DWORDLONG ullTotalPhys;
+//	  DWORDLONG ullAvailPhys;
+//	  DWORDLONG ullTotalPageFile;
+//	  DWORDLONG ullAvailPageFile;
+//	  DWORDLONG ullTotalVirtual;
+//	  DWORDLONG ullAvailVirtual;
+//	  DWORDLONG ullAvailExtendedVirtual;
+//	} MEMORYSTATUSEX, *LPMEMORYSTATUSEX;
+type MEMORYSTATUSEX struct {
+	Length               DWORD
+	MemoryLoad           DWORD
+	TotalPhys            uint64
+	AvailPhys            uint64
+	TotalPageFile        uint64
+	AvailPageFile        uint64
+	TotalVirtual         uint64
+	AvailVirtual         uint64
+	AvailExtendedVirtual uint64
+}

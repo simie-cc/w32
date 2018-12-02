@@ -35,6 +35,7 @@ var (
 	procGlobalAlloc                = modkernel32.NewProc("GlobalAlloc")
 	procGlobalFree                 = modkernel32.NewProc("GlobalFree")
 	procGlobalLock                 = modkernel32.NewProc("GlobalLock")
+	procGlobalMemoryStatusEx       = modkernel32.NewProc("GlobalMemoryStatusEx")
 	procGlobalUnlock               = modkernel32.NewProc("GlobalUnlock")
 	procLoadLibraryA               = modkernel32.NewProc("LoadLibraryA")
 	procLoadResource               = modkernel32.NewProc("LoadResource")
@@ -63,7 +64,6 @@ var (
 	procWaitForSingleObject        = modkernel32.NewProc("WaitForSingleObject")
 	procWriteProcessMemory         = modkernel32.NewProc("WriteProcessMemory")
 )
-
 
 func GetExitCodeProcess(hProcess HANDLE) (code uintptr, e error) {
 	ret, _, lastErr := procGetExitCodeProcess.Call(
@@ -374,6 +374,13 @@ func GlobalLock(hMem HGLOBAL) unsafe.Pointer {
 	}
 
 	return unsafe.Pointer(ret)
+}
+
+func GlobalMemoryStatusEx(lpBuffer *MEMORYSTATUSEX) bool {
+	ret, _, _ := procGlobalMemoryStatusEx.Call(
+		uintptr(unsafe.Pointer(lpBuffer)))
+
+	return ret != 0
 }
 
 func GlobalUnlock(hMem HGLOBAL) bool {
