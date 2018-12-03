@@ -56,6 +56,7 @@ var (
 	procSetBkColor                = modgdi32.NewProc("SetBkColor")
 	procSetBkMode                 = modgdi32.NewProc("SetBkMode")
 	procSetBrushOrgEx             = modgdi32.NewProc("SetBrushOrgEx")
+	procSetDCPenColor             = modgdi32.NewProc("SetDCPenColor")
 	procSetDIBitsToDevice         = modgdi32.NewProc("SetDIBitsToDevice")
 	procSetPixelFormat            = modgdi32.NewProc("SetPixelFormat")
 	procSetStretchBltMode         = modgdi32.NewProc("SetStretchBltMode")
@@ -509,6 +510,14 @@ func SetDIBitsToDevice(hdc HDC, xDest, yDest, dwWidth, dwHeight, xSrc, ySrc int,
 		uintptr(fuColorUse))
 
 	return int(ret)
+}
+
+func SetDCPenColor(hdc HDC, color COLORREF) COLORREF {
+	ret, _, _ := procSetDCPenColor.Call(
+		uintptr(hdc),
+		uintptr(color))
+
+	return COLORREF(ret)
 }
 
 func ChoosePixelFormat(hdc HDC, pfd *PIXELFORMATDESCRIPTOR) int {
