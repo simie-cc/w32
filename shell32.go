@@ -21,6 +21,7 @@ var (
 	procExtractIcon         = modshell32.NewProc("ExtractIconW")
 	procSHBrowseForFolder   = modshell32.NewProc("SHBrowseForFolderW")
 	procSHGetPathFromIDList = modshell32.NewProc("SHGetPathFromIDListW")
+	procShell_NotifyIconW   = modshell32.NewProc("Shell_NotifyIconW")
 	procShellExecute        = modshell32.NewProc("ShellExecuteW")
 )
 
@@ -84,6 +85,14 @@ func DragQueryPoint(hDrop HDROP) (x, y int, isClientArea bool) {
 
 func DragFinish(hDrop HDROP) {
 	procDragFinish.Call(uintptr(hDrop))
+}
+
+func Shell_NotifyIcon(dwMessage DWORD, lpData *NOTIFYICONDATA) bool {
+	ret, _, _ := procShell_NotifyIconW.Call(
+		uintptr(dwMessage),
+		uintptr(unsafe.Pointer(lpData)))
+
+	return ret == 1
 }
 
 func ShellExecute(hwnd HWND, lpOperation, lpFile, lpParameters, lpDirectory string, nShowCmd int) error {

@@ -1305,3 +1305,21 @@ type MEMORYSTATUSEX struct {
 	AvailVirtual         uint64
 	AvailExtendedVirtual uint64
 }
+
+// https://docs.microsoft.com/zh-tw/windows/desktop/api/shellapi/ns-shellapi-_notifyicondataa
+type NOTIFYICONDATA struct {
+	CbSize           uint32
+	HWnd             HWND
+	UID              uint32
+	UFlags           DWORD
+	UCallbackMessage uint32
+	HIcon            HICON
+	SzTip            *uint16
+	DwState          DWORD
+	DwStateMask      DWORD
+	SzInfo           *uint16
+	UVersion         uint32
+	SzInfoTitle      *uint16
+	DwInfoFlags      DWORD
+	GuidItem         GUID
+}
