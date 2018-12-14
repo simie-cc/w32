@@ -1308,18 +1308,34 @@ type MEMORYSTATUSEX struct {
 
 // https://docs.microsoft.com/zh-tw/windows/desktop/api/shellapi/ns-shellapi-_notifyicondataa
 type NOTIFYICONDATA struct {
-	CbSize           uint32
-	HWnd             HWND
-	UID              uint32
-	UFlags           DWORD
-	UCallbackMessage uint32
-	HIcon            HICON
-	SzTip            *uint16
-	DwState          DWORD
-	DwStateMask      DWORD
-	SzInfo           *uint16
-	UVersion         uint32
-	SzInfoTitle      *uint16
-	DwInfoFlags      DWORD
-	GuidItem         GUID
+	CbSize            uint32
+	HWnd              HWND
+	UID               uint32
+	UFlags            DWORD
+	UCallbackMessage  uint32
+	HIcon             HICON
+	SzTip             [64]uint16
+	DwState           DWORD
+	DwStateMask       DWORD
+	SzInfo            [128]uint16
+	UTimeoutOrVersion uint32
+	SzInfoTitle       [32]uint16
+	DwInfoFlags       DWORD
+	GuidItem          GUID
+}
+
+// https://docs.microsoft.com/zh-tw/windows/desktop/api/winuser/ns-winuser-tagmenuiteminfoa
+type MENUITEMINFO struct {
+	CbSize        uint32
+	FMask         uint32
+	FType         uint32
+	FState        uint32
+	WID           uint32
+	HSubMenu      HMENU
+	HbmpChecked   HBITMAP
+	HbmpUnchecked HBITMAP
+	DwItemData    uintptr
+	DwTypeData    *uint16
+	Cch           uint32
+	HbmpItem      HBITMAP
 }

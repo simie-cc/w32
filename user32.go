@@ -33,10 +33,12 @@ var (
 	procCopyRect                      = moduser32.NewProc("CopyRect")
 	procCreateDialogParam             = moduser32.NewProc("CreateDialogParamW")
 	procCreateIcon                    = moduser32.NewProc("CreateIcon")
+	procCreatePopupMenu               = moduser32.NewProc("CreatePopupMenu")
 	procCreateWindowEx                = moduser32.NewProc("CreateWindowExW")
 	procDefDlgProc                    = moduser32.NewProc("DefDlgProcW")
 	procDefWindowProc                 = moduser32.NewProc("DefWindowProcW")
 	procDestroyIcon                   = moduser32.NewProc("DestroyIcon")
+	procDestroyMenu                   = moduser32.NewProc("DestroyMenu")
 	procDestroyWindow                 = moduser32.NewProc("DestroyWindow")
 	procDialogBoxParam                = moduser32.NewProc("DialogBoxParamW")
 	procDispatchMessage               = moduser32.NewProc("DispatchMessageW")
@@ -77,6 +79,7 @@ var (
 	procGetWindowThreadProcessId      = moduser32.NewProc("GetWindowThreadProcessId")
 	procInflateRect                   = moduser32.NewProc("InflateRect")
 	procIntersectRect                 = moduser32.NewProc("IntersectRect")
+	procInsertMenuItem                = moduser32.NewProc("InsertMenuItemW")
 	procInvalidateRect                = moduser32.NewProc("InvalidateRect")
 	procIsClipboardFormatAvailable    = moduser32.NewProc("IsClipboardFormatAvailable")
 	procIsDialogMessage               = moduser32.NewProc("IsDialogMessageW")
@@ -127,6 +130,7 @@ var (
 	procSubtractRect                  = moduser32.NewProc("SubtractRect")
 	procSwapMouseButton               = moduser32.NewProc("SwapMouseButton")
 	procToAscii                       = moduser32.NewProc("ToAscii")
+	procTrackPopupMenu                = moduser32.NewProc("TrackPopupMenu")
 	procTranslateAccelerator          = moduser32.NewProc("TranslateAcceleratorW")
 	procTranslateMessage              = moduser32.NewProc("TranslateMessage")
 	procUnhookWinEvent                = moduser32.NewProc("UnhookWinEvent")
@@ -261,6 +265,11 @@ func UpdateWindow(hwnd HWND) bool {
 	return ret != 0
 }
 
+func CreatePopupMenu() HMENU {
+	ret, _, _ := procCreatePopupMenu.Call()
+	return HMENU(ret)
+}
+
 func CreateWindowEx(exStyle uint, className, windowName *uint16,
 	style uint, x, y, width, height int, parent HWND, menu HMENU,
 	instance HINSTANCE, param unsafe.Pointer) HWND {
@@ -296,6 +305,13 @@ func AdjustWindowRect(rect *RECT, style uint, menu bool) bool {
 		uintptr(unsafe.Pointer(rect)),
 		uintptr(style),
 		uintptr(BoolToBOOL(menu)))
+
+	return ret != 0
+}
+
+func DestroyMenu(hMenu HMENU) bool {
+	ret, _, _ := procDestroyMenu.Call(
+		uintptr(hMenu))
 
 	return ret != 0
 }
@@ -613,6 +629,21 @@ func InflateRect(rect *RECT, dx, dy int) bool {
 	return ret != 0
 }
 
+func InsertMenuItem(hMenu HMENU, item uint32, fByPosition bool, lpmi *MENUITEMINFO) bool {
+	var fByPositionVal int32
+	if fByPosition {
+		fByPositionVal = 1
+	} else {
+		fByPositionVal = 0
+	}
+	ret, _, _ := procInsertMenuItem.Call(
+		uintptr(hMenu),
+		uintptr(item),
+		uintptr(fByPositionVal),
+		uintptr(unsafe.Pointer(lpmi)))
+	return ret != 0
+}
+
 func IntersectRect(dst, src1, src2 *RECT) bool {
 	ret, _, _ := procIntersectRect.Call(
 		uintptr(unsafe.Pointer(dst)),
@@ -769,6 +800,20 @@ func PeekMessage(hwnd HWND, wMsgFilterMin, wMsgFilterMax, wRemoveMsg uint32) (ms
 	}
 	err = nil
 	return
+}
+
+func TrackPopupMenu(hMenu HMENU, uFlags uint32, x int, y int, nReserved int, hWnd HWND, prcRect *RECT) bool {
+	ret, _, _ := procTrackPopupMenu.Call(
+		uintptr(hMenu),
+		uintptr(uFlags),
+		uintptr(x),
+		uintptr(y),
+		uintptr(nReserved),
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(prcRect)))
+
+	return ret != 0
+
 }
 
 func TranslateAccelerator(hwnd HWND, hAccTable HACCEL, lpMsg *MSG) bool {

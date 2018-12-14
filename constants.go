@@ -3065,3 +3065,39 @@ const (
 	NIIF_RESPECT_QUIET_TIME DWORD = 0x00000080
 	NIIF_ICON_MASK          DWORD = 0x0000000F
 )
+
+// https://docs.microsoft.com/zh-tw/windows/desktop/api/winuser/ns-winuser-tagmenuiteminfoa
+const (
+	MIIM_BITMAP     DWORD = 0x00000080
+	MIIM_CHECKMARKS DWORD = 0x00000008
+	MIIM_DATA       DWORD = 0x00000020
+	MIIM_FTYPE      DWORD = 0x00000100
+	MIIM_ID         DWORD = 0x00000002
+	MIIM_STATE      DWORD = 0x00000001
+	MIIM_STRING     DWORD = 0x00000040
+	MIIM_SUBMENU    DWORD = 0x00000004
+	MIIM_TYPE       DWORD = 0x00000010
+)
+
+// https://docs.microsoft.com/zh-tw/windows/desktop/api/winuser/nf-winuser-trackpopupmenu
+const (
+	TPM_CENTERALIGN uint32 = 0x0004
+	TPM_LEFTALIGN   uint32 = 0x0000
+	TPM_RIGHTALIGN  uint32 = 0x0008
+
+	TPM_BOTTOMALIGN  uint32 = 0x0020
+	TPM_TOPALIGN     uint32 = 0x0000
+	TPM_VCENTERALIGN uint32 = 0x0010
+
+	TPM_NONOTIFY  uint32 = 0x0080
+	TPM_RETURNCMD uint32 = 0x0100
+
+	TPM_LEFTBUTTON  uint32 = 0x0000
+	TPM_RIGHTBUTTON uint32 = 0x0002
+
+	TPM_HORNEGANIMATION uint32 = 0x0800
+	TPM_HORPOSANIMATION uint32 = 0x0400
+	TPM_NOANIMATION     uint32 = 0x4000
+	TPM_VERNEGANIMATION uint32 = 0x2000
+	TPM_VERPOSANIMATION uint32 = 0x1000
+)
