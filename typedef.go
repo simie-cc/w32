@@ -1339,3 +1339,14 @@ type MENUITEMINFO struct {
 	Cch           uint32
 	HbmpItem      HBITMAP
 }
+
+// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/ns-winuser-tagwindowpos
+type WINDOWPOS struct {
+	HwndInsertAfter HWND
+	Hwnd            HWND
+	X               int
+	Y               int
+	Cx              int
+	Cy              int
+	Flags           uint
+}
