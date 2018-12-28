@@ -1344,9 +1344,9 @@ type MENUITEMINFO struct {
 type WINDOWPOS struct {
 	HwndInsertAfter HWND
 	Hwnd            HWND
-	X               int
-	Y               int
-	Cx              int
-	Cy              int
-	Flags           uint
+	X               int32
+	Y               int32
+	Cx              int32
+	Cy              int32
+	Flags           uint32
 }
