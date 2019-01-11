@@ -98,6 +98,7 @@ var (
 	procPostMessage                   = moduser32.NewProc("PostMessageW")
 	procPostQuitMessage               = moduser32.NewProc("PostQuitMessage")
 	procPtInRect                      = moduser32.NewProc("PtInRect")
+	procRedrawWindow                  = moduser32.NewProc("RedrawWindow")
 	procRegisterClassEx               = moduser32.NewProc("RegisterClassExW")
 	procRegisterHotKey                = moduser32.NewProc("RegisterHotKey")
 	procReleaseCapture                = moduser32.NewProc("ReleaseCapture")
@@ -221,6 +222,15 @@ func GetForegroundWindow() (hwnd syscall.Handle, err error) {
 	}
 	hwnd = syscall.Handle(r0)
 	return
+}
+
+func RedrawWindow(hWnd HWND, lprcUpdate *RECT, hrgnUpdate HRGN, flags uint32) bool {
+	ret, _, _ := procRedrawWindow.Call(
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(lprcUpdate)),
+		uintptr(hrgnUpdate),
+		uintptr(flags))
+	return ret != 0
 }
 
 func RegisterClassEx(wndClassEx *WNDCLASSEX) ATOM {
