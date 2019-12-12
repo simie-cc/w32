@@ -7,6 +7,8 @@ package w32
 import (
 	"errors"
 	"fmt"
+	"os"
+	"runtime"
 	"syscall"
 	"unsafe"
 )
@@ -20,6 +22,7 @@ var (
 	procControlService               = modadvapi32.NewProc("ControlService")
 	procControlTrace                 = modadvapi32.NewProc("ControlTraceW")
 	procInitializeSecurityDescriptor = modadvapi32.NewProc("InitializeSecurityDescriptor")
+	procLogonUserW                   = modadvapi32.NewProc("LogonUserW")
 	procOpenEventLog                 = modadvapi32.NewProc("OpenEventLogW")
 	procOpenSCManager                = modadvapi32.NewProc("OpenSCManagerW")
 	procOpenService                  = modadvapi32.NewProc("OpenServiceW")
@@ -460,4 +463,21 @@ func ControlService(hService HANDLE, dwControl uint32, lpServiceStatus *SERVICE_
 		uintptr(unsafe.Pointer(lpServiceStatus)))
 
 	return ret != 0
+}
+
+func LogonUser(username, domain, password string, logonType uint32, logonProvider uint32) (token syscall.Handle, err error) {
+	r1, _, e1 := procLogonUserW.Call(
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(username))),
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(domain))),
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(password))),
+		uintptr(logonType),
+		uintptr(logonProvider),
+		uintptr(unsafe.Pointer(&token)))
+	runtime.KeepAlive(username)
+	runtime.KeepAlive(domain)
+	runtime.KeepAlive(password)
+	if int(r1) == 0 {
+		return syscall.InvalidHandle, os.NewSyscallError("LogonUser", e1)
+	}
+	return token, nil
 }
