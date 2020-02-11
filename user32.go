@@ -105,6 +105,7 @@ var (
 	procRedrawWindow                  = moduser32.NewProc("RedrawWindow")
 	procRegisterClassEx               = moduser32.NewProc("RegisterClassExW")
 	procRegisterHotKey                = moduser32.NewProc("RegisterHotKey")
+	procRegisterWindowMessage         = moduser32.NewProc("RegisterWindowMessageW")
 	procReleaseCapture                = moduser32.NewProc("ReleaseCapture")
 	procReleaseDC                     = moduser32.NewProc("ReleaseDC")
 	procRemoveClipboardFormatListener = moduser32.NewProc("RemoveClipboardFormatListener")
@@ -1252,4 +1253,14 @@ func SetLayeredWindowAttributes(hwnd HWND, crKey COLORREF, bAlpha byte, dwFlags 
 	}
 	err = nil
 	return
+}
+
+// Defines a new window message that is guaranteed to be unique throughout the system.
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerwindowmessagew
+func RegisterWindowMessage(lpString string) uint32 {
+	ret, _, _ := procRegisterWindowMessage.Call(
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(lpString))),
+	)
+
+	return uint32(ret)
 }
