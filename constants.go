@@ -3080,6 +3080,18 @@ const (
 	MIIM_TYPE       DWORD = 0x00000010
 )
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuiteminfoa
+const (
+	MFS_CHECKED   DWORD = 0x00000008
+	MFS_DEFAULT   DWORD = 0x00001000
+	MFS_DISABLED  DWORD = 0x00000003
+	MFS_ENABLED   DWORD = 0x00000000
+	MFS_GRAYED    DWORD = 0x00000003
+	MFS_HILITE    DWORD = 0x00000080
+	MFS_UNCHECKED DWORD = 0x00000000
+	MFS_UNHILITE  DWORD = 0x00000000
+)
+
 // https://docs.microsoft.com/zh-tw/windows/desktop/api/winuser/nf-winuser-trackpopupmenu
 const (
 	TPM_CENTERALIGN uint32 = 0x0004
