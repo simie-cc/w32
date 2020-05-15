@@ -52,6 +52,7 @@ var (
 	procFillRect                      = moduser32.NewProc("FillRect")
 	procFindWindowExW                 = moduser32.NewProc("FindWindowExW")
 	procFindWindowW                   = moduser32.NewProc("FindWindowW")
+	procFrameRect                     = moduser32.NewProc("FrameRect")
 	procGetAsyncKeyState              = moduser32.NewProc("GetAsyncKeyState")
 	procGetClassName                  = moduser32.NewProc("GetClassNameW")
 	procGetClientRect                 = moduser32.NewProc("GetClientRect")
@@ -1259,4 +1260,15 @@ func RegisterWindowMessage(lpString string) uint32 {
 	)
 
 	return uint32(ret)
+}
+
+// The FrameRect function draws a border around the specified rectangle by using the specified brush. The width and height of the border are always one logical unit.
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-framerect
+func FrameRect(hDC HDC, lprc *RECT, hbr HBRUSH) bool {
+	ret, _, _ := procFrameRect.Call(
+		uintptr(hDC),
+		uintptr(unsafe.Pointer(lprc)),
+		uintptr(hbr))
+
+	return ret != 0
 }
