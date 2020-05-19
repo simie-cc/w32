@@ -217,13 +217,13 @@ func GetWindowTextW(hwnd syscall.Handle, str *uint16, maxCount int32) (len int32
 	return
 }
 
-func GetForegroundWindow() (hwnd syscall.Handle, err error) {
+func GetForegroundWindow() (hwnd HWND, err error) {
 	r0, _, e1 := syscall.Syscall(procGetForegroundWindow.Addr(), 0, 0, 0, 0)
 	if e1 != 0 {
 		err = error(e1)
 		return
 	}
-	hwnd = syscall.Handle(r0)
+	hwnd = HWND(syscall.Handle(r0))
 	return
 }
 
