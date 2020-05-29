@@ -5,6 +5,7 @@
 package w32
 
 import (
+	"math"
 	"syscall"
 	"unsafe"
 )
@@ -13,6 +14,7 @@ var (
 	modgdi32 = syscall.NewLazyDLL("gdi32.dll")
 
 	procAbortDoc                  = modgdi32.NewProc("AbortDoc")
+	procAngleArc                  = modgdi32.NewProc("AngleArc")
 	procBitBlt                    = modgdi32.NewProc("BitBlt")
 	procChoosePixelFormat         = modgdi32.NewProc("ChoosePixelFormat")
 	procCloseEnhMetaFile          = modgdi32.NewProc("CloseEnhMetaFile")
@@ -65,6 +67,11 @@ var (
 	procStartPage                 = modgdi32.NewProc("StartPage")
 	procStretchBlt                = modgdi32.NewProc("StretchBlt")
 	procSwapBuffers               = modgdi32.NewProc("SwapBuffers")
+
+	procBeginPath         = modgdi32.NewProc("BeginPath")
+	procEndPath           = modgdi32.NewProc("EndPath")
+	procFillPath          = modgdi32.NewProc("FillPath")
+	procStrokeAndFillPath = modgdi32.NewProc("StrokeAndFillPath")
 )
 
 func CreateCompatibleBitmap(hdc HDC, width, height uint) HBITMAP {
@@ -570,4 +577,50 @@ func SwapBuffers(hdc HDC) bool {
 
 func RGB(r, g, b byte) COLORREF {
 	return COLORREF(uint32(b)<<16 | uint32(g)<<8 | uint32(r))
+}
+
+// The AngleArc function draws a line segment and an arc.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-anglearc
+func AngleArc(hdc HDC, x, y int, r DWORD, startAngle, sweepAngle float32) bool {
+	ret, _, _ := procAngleArc.Call(
+		uintptr(hdc),
+		uintptr(x),
+		uintptr(y),
+		uintptr(r),
+		uintptr(math.Float32bits(startAngle)),
+		uintptr(math.Float32bits(sweepAngle)),
+	)
+	return ret == TRUE
+}
+
+// The BeginPath function opens a path bracket in the specified device context.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-beginpath
+func BeginPath(hdc HDC) bool {
+	ret, _, _ := procBeginPath.Call(
+		uintptr(hdc))
+	return ret != 0
+}
+
+// The EndPath function closes a path bracket and selects the path defined by the bracket into the specified device context.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-endpath
+func EndPath(hdc HDC) bool {
+	ret, _, _ := procEndPath.Call(
+		uintptr(hdc))
+	return ret != 0
+}
+
+// The FillPath function closes any open figures in the current path and fills the path's interior by using the current brush and polygon-filling mode.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-fillpath
+func FillPath(hdc HDC) bool {
+	ret, _, _ := procFillPath.Call(
+		uintptr(hdc))
+	return ret != 0
+}
+
+// The StrokeAndFillPath function closes any open figures in a path, strokes the outline of the path by using the current pen, and fills its interior by using the current brush.
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-strokeandfillpath
+func StrokeAndFillPath(hdc HDC) bool {
+	ret, _, _ := procStrokeAndFillPath.Call(
+		uintptr(hdc))
+	return ret != 0
 }
