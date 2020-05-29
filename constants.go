@@ -3153,3 +3153,13 @@ const (
 	NOTIFY_FOR_ALL_SESSIONS = 1
 	NOTIFY_FOR_THIS_SESSION = 0
 )
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-flashwinfo
+const (
+	FLASHW_ALL       = 0x00000003
+	FLASHW_CAPTION   = 0x00000001
+	FLASHW_STOP      = 0
+	FLASHW_TIMER     = 0x00000004
+	FLASHW_TIMERNOFG = 0x0000000C
+	FLASHW_TRAY      = 0x00000002
+)

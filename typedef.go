@@ -1350,3 +1350,12 @@ type WINDOWPOS struct {
 	Cy              int32
 	Flags           uint32
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-flashwinfo
+type FLASHWINFO struct {
+	CbSize    uint32
+	Hwnd      HWND
+	DwFlags   DWORD
+	UCount    uint32
+	DwTimeout DWORD
+}

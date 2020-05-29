@@ -30,17 +30,18 @@ func EnumProcesses(processIds []uint32, cb uint32, bytesReturned *uint32) bool {
 func GetModuleFileNameEx(hProcess HANDLE, hModule HMODULE) (string, DWORD) {
 
 	bufLen := 1024
-	buf := make([]byte, bufLen)
+	buf := make([]uint16, bufLen)
 
 	ret, _, _ := procGetModuleFileNameEx.Call(
 		uintptr(hProcess),
 		uintptr(hModule),
-		uintptr(unsafe.Pointer(&buf)),
+		uintptr(unsafe.Pointer(&buf[0])),
 		uintptr(bufLen))
 
-	if ret > 0 {
-		return string(buf), DWORD(ret)
-	} else {
+	if ret <= 0 {
 		return "", DWORD(ret)
+
 	}
+
+	return syscall.UTF16ToString(buf), DWORD(ret)
 }

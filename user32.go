@@ -56,6 +56,7 @@ var (
 	procFillRect                               = moduser32.NewProc("FillRect")
 	procFindWindowExW                          = moduser32.NewProc("FindWindowExW")
 	procFindWindowW                            = moduser32.NewProc("FindWindowW")
+	procFlashWindowEx                          = moduser32.NewProc("FlashWindowEx")
 	procFrameRect                              = moduser32.NewProc("FrameRect")
 	procGetAsyncKeyState                       = moduser32.NewProc("GetAsyncKeyState")
 	procGetClassName                           = moduser32.NewProc("GetClassNameW")
@@ -1288,4 +1289,12 @@ func PhysicalToLogicalPointForPerMonitorDPI(hWnd HWND, x, y int) (int, int, bool
 		uintptr(unsafe.Pointer(&pt)))
 
 	return int(pt.X), int(pt.Y), ret != 0
+}
+
+// Flashes the specified window. It does not change the active state of the window.
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-flashwindowex
+func FlashWindowEx(pfwi *FLASHWINFO) bool {
+	ret, _, _ := procFlashWindowEx.Call(
+		uintptr(unsafe.Pointer(pfwi)))
+	return ret != 0
 }
