@@ -7,11 +7,13 @@ package w32
 import (
 	"syscall"
 	"unsafe"
+	//"golang.org/x/sys/windows"
 )
 
 var (
 	modcomctl32 = syscall.NewLazyDLL("comctl32.dll")
 
+	procDrawShadowText          = modcomctl32.NewProc("DrawShadowText")
 	procImageList_Add           = modcomctl32.NewProc("ImageList_Add")
 	procImageList_Create        = modcomctl32.NewProc("ImageList_Create")
 	procImageList_Destroy       = modcomctl32.NewProc("ImageList_Destroy")
@@ -22,6 +24,23 @@ var (
 	procInitCommonControlsEx    = modcomctl32.NewProc("InitCommonControlsEx")
 	procTrackMouseEvent         = modcomctl32.NewProc("_TrackMouseEvent")
 )
+
+func DrawShadowText(hDC HDC, text string, uCount int, lpRect *RECT, dwFlags DWORD,
+	crText, crShadow COLORREF,
+	ixOffset, iyOffset int) int {
+	ret, _, _ := procDrawShadowText.Call(
+		uintptr(hDC),
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(text))),
+		uintptr(uCount),
+		uintptr(unsafe.Pointer(lpRect)),
+		uintptr(dwFlags),
+		uintptr(crText),
+		uintptr(crShadow),
+		uintptr(ixOffset),
+		uintptr(iyOffset))
+
+	return int(ret)
+}
 
 func InitCommonControlsEx(lpInitCtrls *INITCOMMONCONTROLSEX) bool {
 	ret, _, _ := procInitCommonControlsEx.Call(
