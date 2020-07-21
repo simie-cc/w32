@@ -1359,3 +1359,26 @@ type FLASHWINFO struct {
 	UCount    uint32
 	DwTimeout DWORD
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/power/processor-power-information-str
+type PROCESSOR_POWER_INFORMATION struct {
+	Number           uint32
+	MaxMhz           uint32
+	CurrentMhz       uint32
+	MhzLimit         uint32
+	MaxIdleState     uint32
+	CurrentIdleState uint32
+}
+
+type SYSTEM_INFO struct {
+	DwOemId                     DWORD
+	DwPageSize                  DWORD
+	LpMinimumApplicationAddress unsafe.Pointer
+	LpMaximumApplicationAddress unsafe.Pointer
+	DwActiveProcessorMask       uintptr
+	DwNumberOfProcessors        DWORD
+	DwProcessorType             DWORD
+	DwAllocationGranularity     DWORD
+	WProcessorLevel             uint16
+	WProcessorRevision          uint16
+}

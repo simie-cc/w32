@@ -37,6 +37,7 @@ var (
 	procGlobalLock                 = modkernel32.NewProc("GlobalLock")
 	procGlobalMemoryStatusEx       = modkernel32.NewProc("GlobalMemoryStatusEx")
 	procGlobalUnlock               = modkernel32.NewProc("GlobalUnlock")
+	procGetSystemInfo              = modkernel32.NewProc("GetSystemInfo")
 	procLoadLibraryA               = modkernel32.NewProc("LoadLibraryA")
 	procLoadResource               = modkernel32.NewProc("LoadResource")
 	procLockResource               = modkernel32.NewProc("LockResource")
@@ -660,4 +661,11 @@ func QueryPerformanceFrequency() uint64 {
 	)
 
 	return result
+}
+
+func GetSystemInfo() SYSTEM_INFO {
+	var info SYSTEM_INFO
+	procGetSystemInfo.Call(uintptr(unsafe.Pointer(&info)))
+
+	return info
 }

@@ -3163,3 +3163,27 @@ const (
 	FLASHW_TIMERNOFG = 0x0000000C
 	FLASHW_TRAY      = 0x00000002
 )
+
+// enum POWER_INFORMATION_LEVEL
+// https://docs.microsoft.com/en-us/windows/win32/api/powerbase/nf-powerbase-callntpowerinformation?redirectedfrom=MSDN
+const (
+	SystemPowerPolicyAc          = 0
+	SystemPowerPolicyDc          = 1
+	VerifySystemPolicyAc         = 2
+	VerifySystemPolicyDc         = 3
+	SystemPowerCapabilities      = 4
+	SystemBatteryState           = 5
+	SystemPowerPolicyCurrent     = 8
+	AdministratorPowerPolicy     = 9
+	SystemReserveHiberFile       = 10
+	ProcessorInformation         = 11
+	SystemPowerInformation       = 12
+	LastWakeTime                 = 14
+	LastSleepTime                = 15
+	SystemExecutionState         = 16
+	ProcessorPowerPolicyAc       = 18
+	ProcessorPowerPolicyDc       = 19
+	VerifyProcessorPowerPolicyAc = 20
+	VerifyProcessorPowerPolicyDc = 21
+	ProcessorPowerPolicyCurrent  = 22
+)
