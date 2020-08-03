@@ -1359,3 +1359,13 @@ type FLASHWINFO struct {
 	UCount    uint32
 	DwTimeout DWORD
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-system_power_status
+type SYSTEM_POWER_STATUS struct {
+	ACLineStatus        byte
+	BatteryFlag         byte
+	BatteryLifePercent  byte
+	SystemStatusFlag    byte
+	BatteryLifeTime     DWORD
+	BatteryFullLifeTime DWORD
+}

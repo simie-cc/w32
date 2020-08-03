@@ -29,6 +29,7 @@ var (
 	procGetModuleHandle            = modkernel32.NewProc("GetModuleHandleW")
 	procGetProcAddress             = modkernel32.NewProc("GetProcAddress")
 	procGetProcessTimes            = modkernel32.NewProc("GetProcessTimes")
+	procGetSystemPowerStatus       = modkernel32.NewProc("GetSystemPowerStatus")
 	procGetSystemTime              = modkernel32.NewProc("GetSystemTime")
 	procGetSystemTimes             = modkernel32.NewProc("GetSystemTimes")
 	procGetUserDefaultLCID         = modkernel32.NewProc("GetUserDefaultLCID")
@@ -660,4 +661,13 @@ func QueryPerformanceFrequency() uint64 {
 	)
 
 	return result
+}
+
+func GetSystemPowerStatus(lpSystemPowerStatus *SYSTEM_POWER_STATUS) bool {
+
+	ret, _, _ := procGetSystemPowerStatus.Call(
+		uintptr(unsafe.Pointer(lpSystemPowerStatus)),
+	)
+
+	return ret != 0
 }
