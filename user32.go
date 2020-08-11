@@ -1093,40 +1093,20 @@ func ChangeDisplaySettingsEx(szDeviceName *uint16, devMode *DEVMODE, hwnd HWND, 
 	return int32(ret)
 }
 
-//Synthesizes keystrokes, mouse motions, and button clicks.
-//see https://msdn.microsoft.com/en-us/library/windows/desktop/ms646310(v=vs.85).aspx
-// func SendInput(inputs []INPUT) (err error) {
-// 	var validInputs []C.INPUT
-
-// 	for _, oneInput := range inputs {
-// 		input := C.INPUT{_type: C.DWORD(oneInput.Type)}
-
-// 		switch oneInput.Type {
-// 		case INPUT_MOUSE:
-// 			(*MouseInput)(unsafe.Pointer(&input)).mi = oneInput.Mi
-// 		case INPUT_KEYBOARD:
-// 			(*KbdInput)(unsafe.Pointer(&input)).ki = oneInput.Ki
-// 		case INPUT_HARDWARE:
-// 			(*HardwareInput)(unsafe.Pointer(&input)).hi = oneInput.Hi
-// 		default:
-// 			err = errors.New("Unknown input type passed: " + fmt.Sprintf("%d", oneInput.Type))
-// 			return
-// 		}
-
-// 		validInputs = append(validInputs, input)
-// 	}
-
-// 	_, _, err = procSendInput.Call(
-// 		uintptr(len(validInputs)),
-// 		uintptr(unsafe.Pointer(&validInputs[0])),
-// 		uintptr(unsafe.Sizeof(C.INPUT{})),
-// 	)
-// 	if err.Error() != ErrSuccess {
-// 		return
-// 	}
-// 	err = nil
-// 	return
-// }
+// Synthesizes keystrokes, (Not supported: mouse motions, and button clicks.)
+// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms646310(v=vs.85).aspx
+func SendInput_KEYBDINPUT(inputs []INPUT_KEYBDINPUT) (err error) {
+	_, _, err = procSendInput.Call(
+		uintptr(len(inputs)),
+		uintptr(unsafe.Pointer(&inputs[0])),
+		uintptr(unsafe.Sizeof(inputs[0])),
+	)
+	if err.Error() != ErrSuccess {
+		return
+	}
+	err = nil
+	return
+}
 
 //Simplifies SendInput for Keyboard related keys. Supports alphanumeric
 // func SendInputString(input string) (err error) {

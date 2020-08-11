@@ -849,12 +849,12 @@ type PIXELFORMATDESCRIPTOR struct {
 }
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646270(v=vs.85).aspx
-type INPUT struct {
-	Type uint32
-	Mi   MOUSEINPUT
-	Ki   KEYBDINPUT
-	Hi   HARDWAREINPUT
-}
+// type INPUT struct {
+// 	Type uint32
+// 	Mi   MOUSEINPUT
+// 	Ki   KEYBDINPUT
+// 	Hi   HARDWAREINPUT
+// }
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646273(v=vs.85).aspx
 type MOUSEINPUT struct {
@@ -867,6 +867,12 @@ type MOUSEINPUT struct {
 }
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646271(v=vs.85).aspx
+type INPUT_KEYBDINPUT struct {
+	Type    uint32
+	Ki      KEYBDINPUT
+	padding uint64
+}
+
 type KEYBDINPUT struct {
 	WVk         uint16
 	WScan       uint16
