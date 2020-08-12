@@ -1375,3 +1375,14 @@ type SYSTEM_POWER_STATUS struct {
 	BatteryLifeTime     DWORD
 	BatteryFullLifeTime DWORD
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowplacement
+type WINDOWPLACEMENT struct {
+	Length           uint32
+	Flags            uint32
+	ShowCmd          uint32
+	PtMinPosition    POINT
+	PtMaxPosition    POINT
+	RcNormalPosition RECT
+	RcDevice         RECT
+}

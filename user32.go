@@ -70,6 +70,7 @@ var (
 	procGetSystemMetrics                       = moduser32.NewProc("GetSystemMetrics")
 	procGetWindowLong                          = moduser32.NewProc("GetWindowLongW")
 	procGetWindowLongPtr                       = moduser32.NewProc("GetWindowLongW")
+	procGetWindowPlacement                     = moduser32.NewProc("GetWindowPlacement")
 	procGetWindowRect                          = moduser32.NewProc("GetWindowRect")
 	procGetWindowText                          = moduser32.NewProc("GetWindowTextW")
 	procGetWindowTextLength                    = moduser32.NewProc("GetWindowTextLengthW")
@@ -124,6 +125,7 @@ var (
 	procSetWinEventHook                        = moduser32.NewProc("SetWinEventHook")
 	procSetWindowLong                          = moduser32.NewProc("SetWindowLongW")
 	procSetWindowLongPtr                       = moduser32.NewProc("SetWindowLongW")
+	procSetWindowPlacement                     = moduser32.NewProc("SetWindowPlacement")
 	procSetWindowPos                           = moduser32.NewProc("SetWindowPos")
 	procSetWindowText                          = moduser32.NewProc("SetWindowTextW")
 	procSetWindowsHookEx                       = moduser32.NewProc("SetWindowsHookExW")
@@ -1272,5 +1274,27 @@ func PhysicalToLogicalPointForPerMonitorDPI(hWnd HWND, x, y int) (int, int, bool
 func FlashWindowEx(pfwi *FLASHWINFO) bool {
 	ret, _, _ := procFlashWindowEx.Call(
 		uintptr(unsafe.Pointer(pfwi)))
+	return ret != 0
+}
+
+// Sets the show state and the restored, minimized, and maximized positions of the specified window.
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowplacement
+func SetWindowPlacement(hWnd HWND, lpwndpl *WINDOWPLACEMENT) bool {
+	lpwndpl.Length = uint32(unsafe.Sizeof(WINDOWPLACEMENT{}))
+	ret, _, _ := procSetWindowPlacement.Call(
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(lpwndpl)),
+	)
+	return ret != 0
+}
+
+// Retrieves the show state and the restored, minimized, and maximized positions of the specified window.
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowplacement
+func GetWindowPlacement(hWnd HWND, lpwndpl *WINDOWPLACEMENT) bool {
+	lpwndpl.Length = uint32(unsafe.Sizeof(WINDOWPLACEMENT{}))
+	ret, _, _ := procGetWindowPlacement.Call(
+		uintptr(hWnd),
+		uintptr(unsafe.Pointer(lpwndpl)),
+	)
 	return ret != 0
 }
