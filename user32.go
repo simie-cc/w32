@@ -1280,7 +1280,6 @@ func FlashWindowEx(pfwi *FLASHWINFO) bool {
 // Sets the show state and the restored, minimized, and maximized positions of the specified window.
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowplacement
 func SetWindowPlacement(hWnd HWND, lpwndpl *WINDOWPLACEMENT) bool {
-	lpwndpl.Length = uint32(unsafe.Sizeof(WINDOWPLACEMENT{}))
 	ret, _, _ := procSetWindowPlacement.Call(
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(lpwndpl)),
@@ -1291,7 +1290,6 @@ func SetWindowPlacement(hWnd HWND, lpwndpl *WINDOWPLACEMENT) bool {
 // Retrieves the show state and the restored, minimized, and maximized positions of the specified window.
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowplacement
 func GetWindowPlacement(hWnd HWND, lpwndpl *WINDOWPLACEMENT) bool {
-	lpwndpl.Length = uint32(unsafe.Sizeof(WINDOWPLACEMENT{}))
 	ret, _, _ := procGetWindowPlacement.Call(
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(lpwndpl)),
