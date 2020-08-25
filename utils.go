@@ -7,6 +7,7 @@ package w32
 import (
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 	"syscall"
 	"unicode/utf16"
 	"unsafe"
@@ -219,4 +220,10 @@ func HexToUint32(hexString string) (result uint32, err error) {
 		result = binary.BigEndian.Uint32(data)
 	}
 	return
+}
+
+// GUID structure to string
+func GUIDToString(guid GUID) string {
+	return fmt.Sprintf("%08X-%04X-%04X-%04X-%08X",
+		guid.Data1, guid.Data2, guid.Data3, guid.Data4[0:4], guid.Data4[5:])
 }
