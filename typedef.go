@@ -1393,3 +1393,52 @@ type POWERBROADCAST_SETTING struct {
 	DataLength   DWORD
 	Data         [1]uint8
 }
+
+//https://docs.microsoft.com/zh-tw/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader
+type BITMAPFILEHEADER struct {
+	BfType        uint16
+	BfSizeLow     uint16
+	BfSizeHigh    uint16
+	BfReserved1   uint16
+	BfReserved2   uint16
+	BfOffBitsLow  uint16
+	BfOffBitsHigh uint16
+}
+
+func (b BITMAPFILEHEADER) GetBfSize() DWORD {
+	return (DWORD(b.BfSizeHigh) << 16) + DWORD(b.BfSizeLow)
+}
+
+func (b BITMAPFILEHEADER) GetBfOffBits() DWORD {
+	return (DWORD(b.BfOffBitsHigh) << 16) + DWORD(b.BfOffBitsLow)
+}
+
+type CIEXYZ struct {
+	CiexyzX, CiexyzY, CiexyzZ int32 // FXPT2DOT30
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-ciexyztriple
+type CIEXYZTRIPLE struct {
+	ciexyzRed   CIEXYZ
+	ciexyzGreen CIEXYZ
+	ciexyzBlue  CIEXYZ
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
+type BITMAPV5HEADER struct {
+	BITMAPINFOHEADER
+
+	BV5RedMask     DWORD
+	BV5GreenMask   DWORD
+	BV5BlueMask    DWORD
+	BV5AlphaMask   DWORD
+	BV5CSType      DWORD
+	BV5Endpoints   CIEXYZTRIPLE
+	BV5GammaRed    DWORD
+	BV5GammaGreen  DWORD
+	BV5GammaBlue   DWORD
+	BV5Intent      DWORD
+	BV5ProfileData DWORD
+	BV5ProfileSize DWORD
+	BV5Reserved    DWORD
+}
