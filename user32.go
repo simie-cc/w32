@@ -7,6 +7,7 @@ package w32
 import (
 	//"encoding/binary"
 	//"errors"
+
 	"fmt"
 
 	"syscall"
@@ -17,51 +18,54 @@ import (
 var (
 	moduser32 = syscall.NewLazyDLL("user32.dll")
 
-	procAddClipboardFormatListener             = moduser32.NewProc("AddClipboardFormatListener")
-	procAdjustWindowRect                       = moduser32.NewProc("AdjustWindowRect")
-	procAdjustWindowRectEx                     = moduser32.NewProc("AdjustWindowRectEx")
-	procBeginPaint                             = moduser32.NewProc("BeginPaint")
-	procCallNextHookEx                         = moduser32.NewProc("CallNextHookEx")
-	procCallWindowProc                         = moduser32.NewProc("CallWindowProcW")
-	procChangeDisplaySettingsEx                = moduser32.NewProc("ChangeDisplaySettingsExW")
-	procClientToScreen                         = moduser32.NewProc("ClientToScreen")
-	procCloseClipboard                         = moduser32.NewProc("CloseClipboard")
-	procCopyRect                               = moduser32.NewProc("CopyRect")
-	procCreateDialogParam                      = moduser32.NewProc("CreateDialogParamW")
-	procCreateIcon                             = moduser32.NewProc("CreateIcon")
-	procCreatePopupMenu                        = moduser32.NewProc("CreatePopupMenu")
-	procCreateWindowEx                         = moduser32.NewProc("CreateWindowExW")
-	procDefDlgProc                             = moduser32.NewProc("DefDlgProcW")
-	procDefWindowProc                          = moduser32.NewProc("DefWindowProcW")
-	procDestroyIcon                            = moduser32.NewProc("DestroyIcon")
-	procDestroyMenu                            = moduser32.NewProc("DestroyMenu")
-	procDestroyWindow                          = moduser32.NewProc("DestroyWindow")
-	procDialogBoxParam                         = moduser32.NewProc("DialogBoxParamW")
-	procDispatchMessage                        = moduser32.NewProc("DispatchMessageW")
-	procDrawIcon                               = moduser32.NewProc("DrawIcon")
-	procDrawText                               = moduser32.NewProc("DrawTextW")
-	procEmptyClipboard                         = moduser32.NewProc("EmptyClipboard")
-	procEnableWindow                           = moduser32.NewProc("EnableWindow")
-	procEndDialog                              = moduser32.NewProc("EndDialog")
-	procEndPaint                               = moduser32.NewProc("EndPaint")
-	procEnumChildWindows                       = moduser32.NewProc("EnumChildWindows")
-	procEnumClipboardFormats                   = moduser32.NewProc("EnumClipboardFormats")
-	procEnumDisplayMonitors                    = moduser32.NewProc("EnumDisplayMonitors")
-	procEnumDisplaySettingsEx                  = moduser32.NewProc("EnumDisplaySettingsExW")
-	procEqualRect                              = moduser32.NewProc("EqualRect")
-	procFillRect                               = moduser32.NewProc("FillRect")
-	procFindWindowExW                          = moduser32.NewProc("FindWindowExW")
-	procFindWindowW                            = moduser32.NewProc("FindWindowW")
-	procFlashWindowEx                          = moduser32.NewProc("FlashWindowEx")
-	procFrameRect                              = moduser32.NewProc("FrameRect")
-	procGetAsyncKeyState                       = moduser32.NewProc("GetAsyncKeyState")
-	procGetClassName                           = moduser32.NewProc("GetClassNameW")
-	procGetClientRect                          = moduser32.NewProc("GetClientRect")
-	procGetClipboardData                       = moduser32.NewProc("GetClipboardData")
-	procGetClipboardFormatName                 = moduser32.NewProc("GetClipboardFormatNameW")
-	procGetCursorPos                           = moduser32.NewProc("GetCursorPos")
-	procGetDC                                  = moduser32.NewProc("GetDC")
-	procGetDlgItem                             = moduser32.NewProc("GetDlgItem")
+	procIsTopLevelWindow           = moduser32.NewProc("IsTopLevelWindow")
+	procAddClipboardFormatListener = moduser32.NewProc("AddClipboardFormatListener")
+	procAdjustWindowRect           = moduser32.NewProc("AdjustWindowRect")
+	procAdjustWindowRectEx         = moduser32.NewProc("AdjustWindowRectEx")
+	procBeginPaint                 = moduser32.NewProc("BeginPaint")
+	procCallNextHookEx             = moduser32.NewProc("CallNextHookEx")
+	procCallWindowProc             = moduser32.NewProc("CallWindowProcW")
+	procChangeDisplaySettingsEx    = moduser32.NewProc("ChangeDisplaySettingsExW")
+	procClientToScreen             = moduser32.NewProc("ClientToScreen")
+	procCloseClipboard             = moduser32.NewProc("CloseClipboard")
+	procCopyRect                   = moduser32.NewProc("CopyRect")
+	procCreateDialogParam          = moduser32.NewProc("CreateDialogParamW")
+	procCreateIcon                 = moduser32.NewProc("CreateIcon")
+	procCreatePopupMenu            = moduser32.NewProc("CreatePopupMenu")
+	procCreateWindowEx             = moduser32.NewProc("CreateWindowExW")
+	procDefDlgProc                 = moduser32.NewProc("DefDlgProcW")
+	procDefWindowProc              = moduser32.NewProc("DefWindowProcW")
+	procDestroyIcon                = moduser32.NewProc("DestroyIcon")
+	procDestroyMenu                = moduser32.NewProc("DestroyMenu")
+	procDestroyWindow              = moduser32.NewProc("DestroyWindow")
+	procDialogBoxParam             = moduser32.NewProc("DialogBoxParamW")
+	procDispatchMessage            = moduser32.NewProc("DispatchMessageW")
+	procDrawIcon                   = moduser32.NewProc("DrawIcon")
+	procDrawText                   = moduser32.NewProc("DrawTextW")
+	procEmptyClipboard             = moduser32.NewProc("EmptyClipboard")
+	procEnableWindow               = moduser32.NewProc("EnableWindow")
+	procEndDialog                  = moduser32.NewProc("EndDialog")
+	procEndPaint                   = moduser32.NewProc("EndPaint")
+	procEnumChildWindows           = moduser32.NewProc("EnumChildWindows")
+	procEnumClipboardFormats       = moduser32.NewProc("EnumClipboardFormats")
+	procEnumDisplayMonitors        = moduser32.NewProc("EnumDisplayMonitors")
+	procEnumDisplaySettingsEx      = moduser32.NewProc("EnumDisplaySettingsExW")
+	procEnumWindows                = moduser32.NewProc("EnumWindows")
+	procEqualRect                  = moduser32.NewProc("EqualRect")
+	procFillRect                   = moduser32.NewProc("FillRect")
+	procFindWindowExW              = moduser32.NewProc("FindWindowExW")
+	procFindWindowW                = moduser32.NewProc("FindWindowW")
+	procFlashWindowEx              = moduser32.NewProc("FlashWindowEx")
+	procFrameRect                  = moduser32.NewProc("FrameRect")
+	procGetAsyncKeyState           = moduser32.NewProc("GetAsyncKeyState")
+	procGetClassName               = moduser32.NewProc("GetClassNameW")
+	procGetClientRect              = moduser32.NewProc("GetClientRect")
+	procGetClipboardData           = moduser32.NewProc("GetClipboardData")
+	procGetClipboardFormatName     = moduser32.NewProc("GetClipboardFormatNameW")
+	procGetCursorPos               = moduser32.NewProc("GetCursorPos")
+	procGetDC                      = moduser32.NewProc("GetDC")
+	procGetDlgItem                 = moduser32.NewProc("GetDlgItem")
+
 	procGetForegroundWindow                    = moduser32.NewProc("GetForegroundWindow")
 	procGetKeyState                            = moduser32.NewProc("GetKeyState")
 	procGetKeyboardState                       = moduser32.NewProc("GetKeyboardState")
@@ -117,6 +121,7 @@ var (
 	procSetClipboardData                       = moduser32.NewProc("SetClipboardData")
 	procSetCursor                              = moduser32.NewProc("SetCursor")
 	procSetCursorPos                           = moduser32.NewProc("SetCursorPos")
+	procSetProcessDPIAware                     = moduser32.NewProc("SetProcessDPIAware")
 	procSetFocus                               = moduser32.NewProc("SetFocus")
 	procSetForegroundWindow                    = moduser32.NewProc("SetForegroundWindow")
 	procSetRect                                = moduser32.NewProc("SetRect")
@@ -142,6 +147,7 @@ var (
 	procUnregisterHotKey                       = moduser32.NewProc("UnregisterHotKey")
 	procUpdateWindow                           = moduser32.NewProc("UpdateWindow")
 	procWaitMessage                            = moduser32.NewProc("WaitMessage")
+	procWaitForInputIdle                       = moduser32.NewProc("WaitForInputIdle")
 	procSetLayeredWindowAttributes             = moduser32.NewProc("SetLayeredWindowAttributes")
 )
 
@@ -1031,10 +1037,12 @@ func DestroyIcon(icon HICON) bool {
 	return ret != 0
 }
 
-func MonitorFromPoint(x, y int, dwFlags uint32) HMONITOR {
+func MonitorFromPoint(x, y int32, dwFlags uint32) HMONITOR {
+	pt := POINT{
+		X: x, Y: y,
+	}
 	ret, _, _ := procMonitorFromPoint.Call(
-		uintptr(x),
-		uintptr(y),
+		uintptr(*(*uintptr)(unsafe.Pointer(&pt))),
 		uintptr(dwFlags),
 	)
 	return HMONITOR(ret)
@@ -1294,5 +1302,37 @@ func GetWindowPlacement(hWnd HWND, lpwndpl *WINDOWPLACEMENT) bool {
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(lpwndpl)),
 	)
+	return ret != 0
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-waitforinputidle
+func WaitForInputIdle(hProcess HANDLE, dwMilliseconds DWORD) DWORD {
+	ret, _, _ := procWaitForInputIdle.Call(
+		uintptr(hProcess),
+		uintptr(dwMilliseconds),
+	)
+	return DWORD(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
+func EnumWindows(lpEnumFunc WNDENUMPROC, lParam LPARAM) bool {
+	ret, _, _ := procEnumWindows.Call(
+		uintptr(syscall.NewCallback(lpEnumFunc)),
+		uintptr(lParam),
+	)
+	return ret != 0
+}
+
+// https://jellevergeer.com/the-undocumented-istoplevelwindow-api/
+func IsTopLevelWindow(hWnd HWND) bool {
+	ret, _, _ := procIsTopLevelWindow.Call(
+		uintptr(hWnd),
+	)
+	return ret != 0
+}
+
+// https://docs.microsoft.com/zh-tw/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
+func SetProcessDPIAware() bool {
+	ret, _, _ := procSetProcessDPIAware.Call()
 	return ret != 0
 }

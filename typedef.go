@@ -1442,3 +1442,11 @@ type BITMAPV5HEADER struct {
 	BV5ProfileSize DWORD
 	BV5Reserved    DWORD
 }
+
+// MONITOR_DPI_TYPE: https://docs.microsoft.com/en-us/windows/win32/api/shellscalingapi/ne-shellscalingapi-monitor_dpi_type
+const (
+	MDT_EFFECTIVE_DPI = 0
+	MDT_ANGULAR_DPI   = 1
+	MDT_RAW_DPI       = 2
+	MDT_DEFAULT       = MDT_EFFECTIVE_DPI
+)
