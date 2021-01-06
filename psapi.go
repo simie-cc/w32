@@ -12,8 +12,9 @@ import (
 var (
 	modpsapi = syscall.NewLazyDLL("psapi.dll")
 
-	procEnumProcesses       = modpsapi.NewProc("EnumProcesses")
-	procGetModuleFileNameEx = modpsapi.NewProc("GetModuleFileNameExW")
+	procEnumProcesses           = modpsapi.NewProc("EnumProcesses")
+	procGetModuleFileNameEx     = modpsapi.NewProc("GetModuleFileNameExW")
+	procGetProcessImageFileName = modpsapi.NewProc("GetProcessImageFileNameW")
 )
 
 func EnumProcesses(processIds []uint32, cb uint32, bytesReturned *uint32) bool {
@@ -44,4 +45,21 @@ func GetModuleFileNameEx(hProcess HANDLE, hModule HMODULE) (string, DWORD) {
 	}
 
 	return syscall.UTF16ToString(buf), DWORD(ret)
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessimagefilenamew
+func GetProcessImageFileName(hProcess HANDLE) (bool, string) {
+	bufLen := 1024
+	buf := make([]uint16, bufLen)
+
+	ret, _, _ := procGetProcessImageFileName.Call(
+		uintptr(hProcess),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(bufLen))
+
+	if ret != 0 {
+		return true, syscall.UTF16ToString(buf)
+	} else {
+		return false, ""
+	}
 }
