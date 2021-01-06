@@ -849,12 +849,12 @@ type PIXELFORMATDESCRIPTOR struct {
 }
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646270(v=vs.85).aspx
-type INPUT struct {
-	Type uint32
-	Mi   MOUSEINPUT
-	Ki   KEYBDINPUT
-	Hi   HARDWAREINPUT
-}
+// type INPUT struct {
+// 	Type uint32
+// 	Mi   MOUSEINPUT
+// 	Ki   KEYBDINPUT
+// 	Hi   HARDWAREINPUT
+// }
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646273(v=vs.85).aspx
 type MOUSEINPUT struct {
@@ -867,6 +867,12 @@ type MOUSEINPUT struct {
 }
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646271(v=vs.85).aspx
+type INPUT_KEYBDINPUT struct {
+	Type    uint32
+	Ki      KEYBDINPUT
+	padding uint64
+}
+
 type KEYBDINPUT struct {
 	WVk         uint16
 	WScan       uint16
@@ -1359,3 +1365,88 @@ type FLASHWINFO struct {
 	UCount    uint32
 	DwTimeout DWORD
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-system_power_status
+type SYSTEM_POWER_STATUS struct {
+	ACLineStatus        byte
+	BatteryFlag         byte
+	BatteryLifePercent  byte
+	SystemStatusFlag    byte
+	BatteryLifeTime     DWORD
+	BatteryFullLifeTime DWORD
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowplacement
+type WINDOWPLACEMENT struct {
+	Length           uint32
+	Flags            uint32
+	ShowCmd          uint32
+	PtMinPosition    POINT
+	PtMaxPosition    POINT
+	RcNormalPosition RECT
+	RcDevice         RECT
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-powerbroadcast_setting
+type POWERBROADCAST_SETTING struct {
+	PowerSetting GUID
+	DataLength   DWORD
+	Data         [1]uint8
+}
+
+//https://docs.microsoft.com/zh-tw/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader
+type BITMAPFILEHEADER struct {
+	BfType        uint16
+	BfSizeLow     uint16
+	BfSizeHigh    uint16
+	BfReserved1   uint16
+	BfReserved2   uint16
+	BfOffBitsLow  uint16
+	BfOffBitsHigh uint16
+}
+
+func (b BITMAPFILEHEADER) GetBfSize() DWORD {
+	return (DWORD(b.BfSizeHigh) << 16) + DWORD(b.BfSizeLow)
+}
+
+func (b BITMAPFILEHEADER) GetBfOffBits() DWORD {
+	return (DWORD(b.BfOffBitsHigh) << 16) + DWORD(b.BfOffBitsLow)
+}
+
+type CIEXYZ struct {
+	CiexyzX, CiexyzY, CiexyzZ int32 // FXPT2DOT30
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-ciexyztriple
+type CIEXYZTRIPLE struct {
+	ciexyzRed   CIEXYZ
+	ciexyzGreen CIEXYZ
+	ciexyzBlue  CIEXYZ
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
+type BITMAPV5HEADER struct {
+	BITMAPINFOHEADER
+
+	BV5RedMask     DWORD
+	BV5GreenMask   DWORD
+	BV5BlueMask    DWORD
+	BV5AlphaMask   DWORD
+	BV5CSType      DWORD
+	BV5Endpoints   CIEXYZTRIPLE
+	BV5GammaRed    DWORD
+	BV5GammaGreen  DWORD
+	BV5GammaBlue   DWORD
+	BV5Intent      DWORD
+	BV5ProfileData DWORD
+	BV5ProfileSize DWORD
+	BV5Reserved    DWORD
+}
+
+// MONITOR_DPI_TYPE: https://docs.microsoft.com/en-us/windows/win32/api/shellscalingapi/ne-shellscalingapi-monitor_dpi_type
+const (
+	MDT_EFFECTIVE_DPI = 0
+	MDT_ANGULAR_DPI   = 1
+	MDT_RAW_DPI       = 2
+	MDT_DEFAULT       = MDT_EFFECTIVE_DPI
+)

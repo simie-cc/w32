@@ -60,6 +60,7 @@ var (
 	procSetBrushOrgEx             = modgdi32.NewProc("SetBrushOrgEx")
 	procSetDCPenColor             = modgdi32.NewProc("SetDCPenColor")
 	procSetDIBitsToDevice         = modgdi32.NewProc("SetDIBitsToDevice")
+	procSetDIBits                 = modgdi32.NewProc("SetDIBits")
 	procSetPixelFormat            = modgdi32.NewProc("SetPixelFormat")
 	procSetStretchBltMode         = modgdi32.NewProc("SetStretchBltMode")
 	procSetTextColor              = modgdi32.NewProc("SetTextColor")
@@ -201,7 +202,7 @@ func CreateDC(lpszDriver, lpszDevice, lpszOutput *uint16, lpInitData *DEVMODE) H
 	return HDC(ret)
 }
 
-func CreateDIBSection(hdc HDC, pbmi *BITMAPINFO, iUsage uint, ppvBits *unsafe.Pointer, hSection HANDLE, dwOffset uint) HBITMAP {
+func CreateDIBSection(hdc HDC, pbmi *BITMAPINFOHEADER, iUsage uint, ppvBits *unsafe.Pointer, hSection HANDLE, dwOffset uint) HBITMAP {
 	ret, _, _ := procCreateDIBSection.Call(
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(pbmi)),
@@ -515,6 +516,20 @@ func SetDIBitsToDevice(hdc HDC, xDest, yDest, dwWidth, dwHeight, xSrc, ySrc int,
 		uintptr(unsafe.Pointer(&lpvBits[0])),
 		uintptr(unsafe.Pointer(lpbmi)),
 		uintptr(fuColorUse))
+
+	return int(ret)
+}
+
+//https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setdibits
+func SetDIBits(hdc HDC, hbm HBITMAP, start, cLines uint32, lpBits []byte, lpbmi *BITMAPINFOHEADER, ColorUse uint32) int {
+	ret, _, _ := procSetDIBits.Call(
+		uintptr(hdc),
+		uintptr(hbm),
+		uintptr(start),
+		uintptr(cLines),
+		uintptr(unsafe.Pointer(&lpBits[0])),
+		uintptr(unsafe.Pointer(lpbmi)),
+		uintptr(ColorUse))
 
 	return int(ret)
 }
