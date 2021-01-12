@@ -15,6 +15,7 @@ var (
 
 	procGetDpiForMonitor         = modShcore.NewProc("GetDpiForMonitor")
 	procGetScaleFactorForMonitor = modShcore.NewProc("GetScaleFactorForMonitor")
+	procGetProcessDpiAwareness   = modShcore.NewProc("GetProcessDpiAwareness")
 )
 
 // https://docs.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor
@@ -43,4 +44,18 @@ func GetScaleFactorForMonitor(hmonitor HMONITOR) (scale uint32, err error) {
 	}
 
 	return
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getprocessdpiawareness
+func GetProcessDpiAwareness(hprocess HANDLE) (uint32, error) {
+	var dpiAwareness uint32
+	ret, _, _ := procGetProcessDpiAwareness.Call(
+		uintptr(hprocess),
+		uintptr(unsafe.Pointer(&dpiAwareness)),
+	)
+	if ret != 0 {
+		return 0, errors.New("GetProcessDpiAwareness failed")
+	}
+
+	return dpiAwareness, nil
 }
