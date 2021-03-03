@@ -24,6 +24,7 @@ var (
 	procSHGetPathFromIDList = modshell32.NewProc("SHGetPathFromIDListW")
 	procShell_NotifyIconW   = modshell32.NewProc("Shell_NotifyIconW")
 	procShellExecute        = modshell32.NewProc("ShellExecuteW")
+	procSHAppBarMessage     = modshell32.NewProc("SHAppBarMessage")
 )
 
 func SHBrowseForFolder(bi *BROWSEINFO) uintptr {
@@ -160,4 +161,13 @@ func ExtractIcon(lpszExeFileName string, nIconIndex int) HICON {
 		uintptr(nIconIndex))
 
 	return HICON(ret)
+}
+
+func SHAppBarMessage(dwMessage DWORD, pData *APPBARDATA) uintptr {
+	ret, _, _ := procSHAppBarMessage.Call(
+		uintptr(dwMessage),
+		uintptr(unsafe.Pointer(pData)),
+	)
+
+	return ret
 }
