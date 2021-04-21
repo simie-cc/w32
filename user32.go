@@ -67,6 +67,7 @@ var (
 	procGetDC                      = moduser32.NewProc("GetDC")
 	procGetDlgItem                 = moduser32.NewProc("GetDlgItem")
 
+	procGetDesktopWindow                       = moduser32.NewProc("GetDesktopWindow")
 	procGetForegroundWindow                    = moduser32.NewProc("GetForegroundWindow")
 	procGetKeyState                            = moduser32.NewProc("GetKeyState")
 	procGetKeyboardState                       = moduser32.NewProc("GetKeyboardState")
@@ -184,12 +185,23 @@ func SetForegroundWindow(hwnd HWND) bool {
 }
 
 // https://github.com/AllenDang/w32/pull/62/commits/bf59645b86663a54dffb94ca82683cc0610a6de3
-func FindWindowExW(hwndParent, hwndChildAfter HWND, className, windowName *uint16) HWND {
+func FindWindowExW(hwndParent, hwndChildAfter HWND, className, windowName string) HWND {
+
+	classNameU := uintptr(0)
+	if len(className) > 0 {
+		classNameU = uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(className)))
+	}
+	windowNameU := uintptr(0)
+	if len(windowName) > 0 {
+		windowNameU = uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(windowName)))
+	}
+
 	ret, _, _ := procFindWindowExW.Call(
 		uintptr(hwndParent),
 		uintptr(hwndChildAfter),
-		uintptr(unsafe.Pointer(className)),
-		uintptr(unsafe.Pointer(windowName)))
+		classNameU,
+		windowNameU,
+	)
 
 	return HWND(ret)
 }
@@ -235,6 +247,12 @@ func GetForegroundWindow() (hwnd HWND, err error) {
 	}
 	hwnd = HWND(syscall.Handle(r0))
 	return
+}
+
+func GetDesktopWindow() (hwnd HWND) {
+	ret, _, _ := procGetDesktopWindow.Call()
+
+	return HWND(ret)
 }
 
 func RedrawWindow(hWnd HWND, lprcUpdate *RECT, hrgnUpdate HRGN, flags uint32) bool {
