@@ -3207,3 +3207,10 @@ const (
 	HALFTONE          = 4
 	MAXSTRETCHBLTMODE = 4
 )
+
+const (
+	DPI_AWARENESS_CONTEXT_DEFAULT           = 0  // Undocumented
+	DPI_AWARENESS_CONTEXT_UNAWARE           = -1 // Undocumented
+	DPI_AWARENESS_CONTEXT_SYSTEM_AWARE      = -2 // Undocumented
+	DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE = -3 // Undocumented
+)

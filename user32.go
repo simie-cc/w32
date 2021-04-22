@@ -123,6 +123,7 @@ var (
 	procSetClipboardData                       = moduser32.NewProc("SetClipboardData")
 	procSetCursor                              = moduser32.NewProc("SetCursor")
 	procSetCursorPos                           = moduser32.NewProc("SetCursorPos")
+	procSetProcessDpiAwarenessContext          = moduser32.NewProc("SetProcessDpiAwarenessContext")
 	procSetProcessDPIAware                     = moduser32.NewProc("SetProcessDPIAware")
 	procSetFocus                               = moduser32.NewProc("SetFocus")
 	procSetForegroundWindow                    = moduser32.NewProc("SetForegroundWindow")
@@ -1353,5 +1354,13 @@ func IsTopLevelWindow(hWnd HWND) bool {
 // https://docs.microsoft.com/zh-tw/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
 func SetProcessDPIAware() bool {
 	ret, _, _ := procSetProcessDPIAware.Call()
+	return ret != 0
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiawarenesscontext
+func SetProcessDpiAwarenessContext(val int) bool {
+	ret, _, _ := procSetProcessDpiAwarenessContext.Call(
+		uintptr(val),
+	)
 	return ret != 0
 }
