@@ -129,7 +129,7 @@ func AbortDoc(hdc HDC) int {
 	return int(ret)
 }
 
-func BitBlt(hdcDest HDC, nXDest, nYDest, nWidth, nHeight int, hdcSrc HDC, nXSrc, nYSrc int, dwRop uint) {
+func BitBlt(hdcDest HDC, nXDest, nYDest, nWidth, nHeight int, hdcSrc HDC, nXSrc, nYSrc int, dwRop uint) bool {
 	ret, _, _ := procBitBlt.Call(
 		uintptr(hdcDest),
 		uintptr(nXDest),
@@ -141,9 +141,7 @@ func BitBlt(hdcDest HDC, nXDest, nYDest, nWidth, nHeight int, hdcSrc HDC, nXSrc,
 		uintptr(nYSrc),
 		uintptr(dwRop))
 
-	if ret == 0 {
-		panic("BitBlt failed")
-	}
+	return ret != 0 
 }
 
 func PatBlt(hdc HDC, nXLeft, nYLeft, nWidth, nHeight int, dwRop uint) {
