@@ -1482,3 +1482,18 @@ const (
 	ABN_FULLSCREENAPP = 2
 	ABN_WINDOWARRANGE = 3
 )
+
+// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-overlapped
+type OVERLAPPED struct {
+	Internal     ULONG_PTR
+	InternalHigh ULONG_PTR
+	// union {
+	//   struct {
+	// 	DWORD Offset;
+	// 	DWORD OffsetHigh;
+	//   } DUMMYSTRUCTNAME;
+	//   PVOID Pointer;
+	// } DUMMYUNIONNAME;
+	Pointer uintptr
+	HEvent  HANDLE
+}
