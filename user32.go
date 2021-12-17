@@ -1,4 +1,6 @@
+//go:build windows
 // +build windows
+
 // Copyright 2010-2012 The W32 Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -1179,8 +1181,10 @@ func SetWindowsHookEx(idHook int, lpfn HOOKPROC, hMod HINSTANCE, dwThreadId DWOR
 	return HHOOK(ret)
 }
 
+type WINEVENTPROC func(hWinEventHook HHOOK, event DWORD, hwnd HWND, idObject int32, idChild int32, idEventThread DWORD, dwmsEventTime DWORD) uintptr
+
 // Lifted from https://github.com/kbinani/win/blob/b749091b14a8a4867e0fc93567d5c6af7b360e8f/user32.go#L5215
-func SetWinEventHook(eventMin DWORD, eventMax DWORD, hmodWinEventProc HMODULE, pfnWinEventProc HOOKPROC, idProcess DWORD, idThread DWORD, dwFlags DWORD) HHOOK {
+func SetWinEventHook(eventMin DWORD, eventMax DWORD, hmodWinEventProc HMODULE, pfnWinEventProc WINEVENTPROC, idProcess DWORD, idThread DWORD, dwFlags DWORD) HHOOK {
 
 	ret, _, _ := procSetWinEventHook.Call(
 		uintptr(eventMin),
