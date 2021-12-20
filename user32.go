@@ -97,6 +97,7 @@ var (
 	procKillTimer                              = moduser32.NewProc("KillTimer")
 	procLoadCursor                             = moduser32.NewProc("LoadCursorW")
 	procLoadIcon                               = moduser32.NewProc("LoadIconW")
+	procLockWorkStation                        = moduser32.NewProc("LockWorkStation")
 	procMapVirtualKey                          = moduser32.NewProc("MapVirtualKeyExW")
 	procMessageBox                             = moduser32.NewProc("MessageBoxW")
 	procMonitorFromPoint                       = moduser32.NewProc("MonitorFromPoint")
@@ -1366,5 +1367,11 @@ func SetProcessDpiAwarenessContext(val int) bool {
 	ret, _, _ := procSetProcessDpiAwarenessContext.Call(
 		uintptr(val),
 	)
+	return ret != 0
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-lockworkstation
+func LockWorkStation() bool {
+	ret, _, _ := procLockWorkStation.Call()
 	return ret != 0
 }
