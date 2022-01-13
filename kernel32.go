@@ -1,4 +1,6 @@
+//go:build windows
 // +build windows
+
 // Copyright 2010-2012 The W32 Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -18,11 +20,13 @@ var (
 	procCreateProcessA             = modkernel32.NewProc("CreateProcessA")
 	procCreateProcessW             = modkernel32.NewProc("CreateProcessW")
 	procCreateRemoteThread         = modkernel32.NewProc("CreateRemoteThread")
+	procCreateThread               = modkernel32.NewProc("CreateThread")
 	procCreateToolhelp32Snapshot   = modkernel32.NewProc("CreateToolhelp32Snapshot")
 	procFindResource               = modkernel32.NewProc("FindResourceW")
 	procGetConsoleScreenBufferInfo = modkernel32.NewProc("GetConsoleScreenBufferInfo")
 	procGetConsoleWindow           = modkernel32.NewProc("GetConsoleWindow")
 	procGetCurrentThread           = modkernel32.NewProc("GetCurrentThread")
+	procGetCurrentThreadId         = modkernel32.NewProc("GetCurrentThreadId")
 	procGetDiskFreeSpaceEx         = modkernel32.NewProc("GetDiskFreeSpaceExW")
 	procGetExitCodeProcess         = modkernel32.NewProc("GetExitCodeProcess")
 	procGetLastError               = modkernel32.NewProc("GetLastError")
@@ -292,6 +296,26 @@ func CreateRemoteThread(hprocess HANDLE, sa *syscall.SecurityAttributes,
 	return syscall.Handle(r1), threadId, nil
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread
+func CreateThread(sa *syscall.SecurityAttributes,
+	stackSize uint32, threadFn ThreadFunc, parameter uintptr, creationFlags uint32) (syscall.Handle, uint32, error) {
+
+	var threadId uint32
+	r1, _, e1 := procCreateThread.Call(
+		uintptr(unsafe.Pointer(sa)),
+		uintptr(stackSize),
+		uintptr(syscall.NewCallback(threadFn)),
+		uintptr(parameter),
+		uintptr(creationFlags),
+		uintptr(unsafe.Pointer(&threadId)))
+
+	if int(r1) == 0 {
+		return syscall.InvalidHandle, 0, e1
+	}
+
+	return syscall.Handle(r1), threadId, nil
+}
+
 func GetModuleHandle(modulename string) HINSTANCE {
 	var mn uintptr
 	if modulename == "" {
@@ -322,6 +346,12 @@ func GetCurrentThread() HANDLE {
 	ret, _, _ := procGetCurrentThread.Call()
 
 	return HANDLE(ret)
+}
+
+func GetCurrentThreadId() DWORD {
+	ret, _, _ := procGetCurrentThreadId.Call()
+
+	return DWORD(ret)
 }
 
 func GetLogicalDrives() uint32 {

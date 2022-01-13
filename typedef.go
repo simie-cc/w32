@@ -1497,3 +1497,5 @@ type OVERLAPPED struct {
 	Pointer uintptr
 	HEvent  HANDLE
 }
+
+type ThreadFunc func(lpParameter uintptr) uintptr
