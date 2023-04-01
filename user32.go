@@ -54,6 +54,7 @@ var (
 	procEnumDisplayMonitors        = moduser32.NewProc("EnumDisplayMonitors")
 	procEnumDisplaySettingsEx      = moduser32.NewProc("EnumDisplaySettingsExW")
 	procEnumWindows                = moduser32.NewProc("EnumWindows")
+	procEnumDesktopWindows         = moduser32.NewProc("EnumDesktopWindows")
 	procEqualRect                  = moduser32.NewProc("EqualRect")
 	procFillRect                   = moduser32.NewProc("FillRect")
 	procFindWindowExW              = moduser32.NewProc("FindWindowExW")
@@ -1223,8 +1224,8 @@ func CallNextHookEx(hhk HHOOK, nCode int, wParam WPARAM, lParam LPARAM) LRESULT 
 	return LRESULT(ret)
 }
 
-//Defines a system-wide hotkey.
-//See https://msdn.microsoft.com/en-us/library/windows/desktop/ms646309(v=vs.85).aspx
+// Defines a system-wide hotkey.
+// See https://msdn.microsoft.com/en-us/library/windows/desktop/ms646309(v=vs.85).aspx
 func RegisterHotKey(hwnd HWND, id int, fsModifiers uint, vkey uint) (err error) {
 	_, _, err = procRegisterHotKey.Call(
 		uintptr(hwnd),
@@ -1239,8 +1240,8 @@ func RegisterHotKey(hwnd HWND, id int, fsModifiers uint, vkey uint) (err error) 
 	return
 }
 
-//Defines a system-wide hotkey.
-//See https://msdn.microsoft.com/en-us/library/windows/desktop/ms646309(v=vs.85).aspx
+// Defines a system-wide hotkey.
+// See https://msdn.microsoft.com/en-us/library/windows/desktop/ms646309(v=vs.85).aspx
 func UnregisterHotKey(hwnd HWND, id int) (err error) {
 	_, _, err = procUnregisterHotKey.Call(
 		uintptr(hwnd),
@@ -1254,7 +1255,7 @@ func UnregisterHotKey(hwnd HWND, id int) (err error) {
 }
 
 // Sets the opacity and transparency color key of a layered window.
-//https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-setlayeredwindowattributes
+// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-setlayeredwindowattributes
 func SetLayeredWindowAttributes(hwnd HWND, crKey COLORREF, bAlpha byte, dwFlags DWORD) (err error) {
 	_, _, err = procSetLayeredWindowAttributes.Call(
 		uintptr(hwnd),
@@ -1342,6 +1343,16 @@ func WaitForInputIdle(hProcess HANDLE, dwMilliseconds DWORD) DWORD {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
 func EnumWindows(lpEnumFunc WNDENUMPROC, lParam LPARAM) bool {
 	ret, _, _ := procEnumWindows.Call(
+		uintptr(syscall.NewCallback(lpEnumFunc)),
+		uintptr(lParam),
+	)
+	return ret != 0
+}
+
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdesktopwindows?redirectedfrom=MSDN
+func EnumDesktopWindows(hDesktop HANDLE, lpEnumFunc WNDENUMPROC, lParam LPARAM) bool {
+	ret, _, _ := procEnumDesktopWindows.Call(
+		uintptr(hDesktop),
 		uintptr(syscall.NewCallback(lpEnumFunc)),
 		uintptr(lParam),
 	)
