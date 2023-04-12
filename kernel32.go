@@ -53,6 +53,7 @@ var (
 	procMoveMemory                 = modkernel32.NewProc("RtlMoveMemory")
 	procMulDiv                     = modkernel32.NewProc("MulDiv")
 	procOpenProcess                = modkernel32.NewProc("OpenProcess")
+	procQueryFullProcessImageName  = modkernel32.NewProc("QueryFullProcessImageNameW")
 	procQueryPerformanceCounter    = modkernel32.NewProc("QueryPerformanceCounter")
 	procQueryPerformanceFrequency  = modkernel32.NewProc("QueryPerformanceFrequency")
 	procReadProcessMemory          = modkernel32.NewProc("ReadProcessMemory")
@@ -180,7 +181,7 @@ func VirtualQueryEx(hProcess HANDLE, lpAddress uintptr, lpBuffer *MEMORY_BASIC_I
 	return int(ret) // TODO check for errors
 }
 
-//https://msdn.microsoft.com/en-us/library/windows/desktop/aa366898(v=vs.85).aspx
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa366898(v=vs.85).aspx
 func VirtualProtect(lpAddress uintptr, dwSize int, flNewProtect int, lpflOldProtect *DWORD) bool {
 	ret, _, _ := procVirtualProtect.Call(
 		lpAddress,
@@ -497,6 +498,21 @@ func OpenProcess(desiredAccess uint32, inheritHandle bool, processId uint32) (ha
 	return
 }
 
+func QueryFullProcessImageName(hProcess HANDLE, dwFlags DWORD) (exeName string, retB bool) {
+
+	buf := make([]uint16, 1024)
+
+	ret, _, _ := procQueryFullProcessImageName.Call(
+		uintptr(hProcess),
+		uintptr(dwFlags),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(len(buf)))
+
+	retB = ret != 0
+
+	return
+}
+
 func TerminateProcess(hProcess HANDLE, uExitCode uint) bool {
 	ret, _, _ := procTerminateProcess.Call(
 		uintptr(hProcess),
@@ -607,8 +623,8 @@ func SetSystemTime(time *SYSTEMTIME) (err error) {
 	return
 }
 
-//Writes data to an area of memory in a specified process. The entire area to be written to must be accessible or the operation fails.
-//https://msdn.microsoft.com/en-us/library/windows/desktop/ms681674(v=vs.85).aspx
+// Writes data to an area of memory in a specified process. The entire area to be written to must be accessible or the operation fails.
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ms681674(v=vs.85).aspx
 func WriteProcessMemory(hProcess HANDLE, lpBaseAddress uint32, data []byte, size uint) (err error) {
 	var numBytesRead uintptr
 
@@ -624,7 +640,7 @@ func WriteProcessMemory(hProcess HANDLE, lpBaseAddress uint32, data []byte, size
 	return
 }
 
-//Write process memory with a source of uint32
+// Write process memory with a source of uint32
 func WriteProcessMemoryAsUint32(hProcess HANDLE, lpBaseAddress uint32, data uint32) (err error) {
 
 	bData := make([]byte, 4)
@@ -636,8 +652,8 @@ func WriteProcessMemoryAsUint32(hProcess HANDLE, lpBaseAddress uint32, data uint
 	return
 }
 
-//Reads data from an area of memory in a specified process. The entire area to be read must be accessible or the operation fails.
-//https://msdn.microsoft.com/en-us/library/windows/desktop/ms680553(v=vs.85).aspx
+// Reads data from an area of memory in a specified process. The entire area to be read must be accessible or the operation fails.
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ms680553(v=vs.85).aspx
 func ReadProcessMemory(hProcess HANDLE, lpBaseAddress uint32, size uint) (data []byte, err error) {
 	var numBytesRead uintptr
 	data = make([]byte, size)
@@ -654,7 +670,7 @@ func ReadProcessMemory(hProcess HANDLE, lpBaseAddress uint32, size uint) (data [
 	return
 }
 
-//Read process memory and convert the returned data to uint32
+// Read process memory and convert the returned data to uint32
 func ReadProcessMemoryAsUint32(hProcess HANDLE, lpBaseAddress uint32) (buffer uint32, err error) {
 	data, err := ReadProcessMemory(hProcess, lpBaseAddress, 4)
 	if err != nil {
@@ -664,8 +680,8 @@ func ReadProcessMemoryAsUint32(hProcess HANDLE, lpBaseAddress uint32) (buffer ui
 	return
 }
 
-//Adds or removes an application-defined HandlerRoutine function from the list of handler functions for the calling process.
-//https://msdn.microsoft.com/en-us/library/windows/desktop/ms686016(v=vs.85).aspx
+// Adds or removes an application-defined HandlerRoutine function from the list of handler functions for the calling process.
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ms686016(v=vs.85).aspx
 func SetConsoleCtrlHandler(handlerRoutine func(DWORD) int32, add uint) (err error) {
 	_, _, err = procSetConsoleCtrlHandler.Call(uintptr(unsafe.Pointer(&handlerRoutine)),
 		uintptr(add))
