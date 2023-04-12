@@ -501,12 +501,13 @@ func OpenProcess(desiredAccess uint32, inheritHandle bool, processId uint32) (ha
 func QueryFullProcessImageName(hProcess HANDLE, dwFlags DWORD) (exeName string, retB bool) {
 
 	buf := make([]uint16, 1024)
+	bufLen := uint32(len(buf))
 
 	ret, _, _ := procQueryFullProcessImageName.Call(
 		uintptr(hProcess),
 		uintptr(dwFlags),
 		uintptr(unsafe.Pointer(&buf[0])),
-		uintptr(len(buf)))
+		uintptr(unsafe.Pointer(&bufLen)))
 
 	retB = ret != 0
 
