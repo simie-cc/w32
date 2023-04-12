@@ -510,6 +510,9 @@ func QueryFullProcessImageName(hProcess HANDLE, dwFlags DWORD) (exeName string, 
 		uintptr(unsafe.Pointer(&bufLen)))
 
 	retB = ret != 0
+	if retB {
+		exeName = syscall.UTF16ToString(buf)
+	}
 
 	return
 }
