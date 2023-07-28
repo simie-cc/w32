@@ -9,14 +9,15 @@ package w32
 
 import (
 	"encoding/binary"
+	"errors"
 	"syscall"
 	"unsafe"
 )
 
 var (
 	modkernel32                    = syscall.NewLazyDLL("kernel32.dll")
-	procCopyMemory                 = modkernel32.NewProc("RtlCopyMemory")
 	procCloseHandle                = modkernel32.NewProc("CloseHandle")
+	procCopyMemory                 = modkernel32.NewProc("RtlCopyMemory")
 	procCreateProcessA             = modkernel32.NewProc("CreateProcessA")
 	procCreateProcessW             = modkernel32.NewProc("CreateProcessW")
 	procCreateRemoteThread         = modkernel32.NewProc("CreateRemoteThread")
@@ -32,6 +33,7 @@ var (
 	procGetLastError               = modkernel32.NewProc("GetLastError")
 	procGetLogicalDrives           = modkernel32.NewProc("GetLogicalDrives")
 	procGetModuleHandle            = modkernel32.NewProc("GetModuleHandleW")
+	procGetPerformanceInfo         = modkernel32.NewProc("K32GetPerformanceInfo")
 	procGetProcAddress             = modkernel32.NewProc("GetProcAddress")
 	procGetProcessTimes            = modkernel32.NewProc("GetProcessTimes")
 	procGetSystemPowerStatus       = modkernel32.NewProc("GetSystemPowerStatus")
@@ -721,4 +723,37 @@ func GetSystemPowerStatus(lpSystemPowerStatus *SYSTEM_POWER_STATUS) bool {
 	)
 
 	return ret != 0
+}
+
+type PERFORMANCE_INFORMATION struct {
+	cb                uintptr
+	CommitTotal       SIZE_T
+	CommitLimit       SIZE_T
+	CommitPeak        SIZE_T
+	PhysicalTotal     SIZE_T
+	PhysicalAvailable SIZE_T
+	SystemCache       SIZE_T
+	KernelTotal       SIZE_T
+	KernelPaged       SIZE_T
+	KernelNonpaged    SIZE_T
+	PageSize          SIZE_T
+	HandleCount       DWORD
+	ProcessCount      DWORD
+	ThreadCount       DWORD
+}
+
+// https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getperformanceinfo
+func GetPerformanceInfo() (PERFORMANCE_INFORMATION, error) {
+	var pi PERFORMANCE_INFORMATION
+	pi.cb = unsafe.Sizeof(pi)
+	ret, _, _ := procGetPerformanceInfo.Call(
+		uintptr(unsafe.Pointer(&pi)),
+		uintptr(pi.cb),
+	)
+
+	if ret != 0 {
+		return pi, nil
+	} else {
+		return PERFORMANCE_INFORMATION{}, errors.New("Call failed")
+	}
 }
