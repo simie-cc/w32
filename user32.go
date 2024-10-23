@@ -26,6 +26,7 @@ var (
 	procAdjustWindowRect           = moduser32.NewProc("AdjustWindowRect")
 	procAdjustWindowRectEx         = moduser32.NewProc("AdjustWindowRectEx")
 	procBeginPaint                 = moduser32.NewProc("BeginPaint")
+	procBringWindowToTop           = moduser32.NewProc("BringWindowToTop")
 	procCallNextHookEx             = moduser32.NewProc("CallNextHookEx")
 	procCallWindowProc             = moduser32.NewProc("CallWindowProcW")
 	procChangeDisplaySettingsEx    = moduser32.NewProc("ChangeDisplaySettingsExW")
@@ -1384,5 +1385,11 @@ func SetProcessDpiAwarenessContext(val int) bool {
 // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-lockworkstation
 func LockWorkStation() bool {
 	ret, _, _ := procLockWorkStation.Call()
+	return ret != 0
+}
+
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-lockworkstation
+func BringWindowToTop(hWnd HWND) bool {
+	ret, _, _ := procBringWindowToTop.Call()
 	return ret != 0
 }
